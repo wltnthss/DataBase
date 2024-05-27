@@ -180,3 +180,22 @@ ST AS	-- SALES TARGET
 
 </div>
 </details>
+
+<details>
+<summary style="font-size:16px ">Oracle NVL -> PostgreSQL COALESCE 전환</summary>
+<div markdown="1">
+
+### NVL 함수 PostgreSQL 대체 함수 COALESCE
+
+* ORACLE 에서는 ''(싱글 쿼테이션)을 NULL로 취급하지만, PostgreSQL 에서는 '' 과 NULL을 다른 값으로 취급하기에 ORACLE과 동일한 결과를 얻기 위해서는 NULLIF 함수를 사용하여 name 항목의 값이 '' 인 경우 NULL을 리턴하도록 변환시켜주어야 합니다.
+
+```SQL
+ -- ORACLE 
+ SELECT NO, COALESCE(NAME, 'NONE') FROM TESTTABLE;
+
+ -- POSTGRESQL
+ SELECT COALESCE(NULLIF(NAME, ''), 'NONE) FROM TESTTABLE;
+```
+
+</div>
+</details>
