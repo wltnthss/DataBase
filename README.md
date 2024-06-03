@@ -199,3 +199,82 @@ ST AS	-- SALES TARGET
 
 </div>
 </details>
+
+<details>
+<summary style="font-size:16px ">Oracle PL/SQL CURSOR</summary>
+<div markdown="1">
+
+* CURSOR : **ORACLE 서버에서 할당한 전용 메모리 영역에 대한 포인터. (질의의 결과로 얻어진 여러 행이 저장된 메모리상의 위치)**
+* 커서는 주로 SELECT 문의 결과 집합을 처리하는데 사용된다.
+* 즉, 대부분 SQL 결과 ROW는 여러개 -> 커서를 사용함으로써 ROW에 순차적으로 접근한다.
+
+**Cursor 종류**
+
+1. 명시적 커서 : 사용자가 직접 정의해서 사용
+2. 묵시적 커서 : 오라클 내부에서 자동 생성 후 SQL 문장 실행될 때마다 자동으로 만들어져 사용
+
+**Cursor 속성**
+
+* %Found : Fetch 발생하면 true 반환
+* %isOpen : 커서 오픈 상태일 경우 true 반환
+* %NotFound : 할당할 레코드가 없는 경우 true 반환
+* %RowCount : 카운터 역할 오픈 시 0, Fetch 발생할 때마다 1씩 증가
+
+**Cursor 처리 단계 (명시적 커서)**
+
+1. Cursor -> 명시적 커서 선언
+2. Open -> 명시적 커서 오픈
+3. Fetch -> 커서 데이터 추출
+4. Close -> 커서 종료
+
+```sql
+-- 명시적 커서 사용 예제
+DECLARE
+	emp_id number(10);
+	emp_name varchar2(20);
+	emp_salary number(20);
+	
+CURSOR cul IS
+	select EMPLOYEE_ID, LAST_NAME, SALARY 
+	from EMPLOYEES e2 
+	where DEPARTMENT_ID='50';
+	
+BEGIN
+	OPEN cul;
+
+	dbms_output.put_line('사번   이름   급여 ');
+
+	LOOP 
+		FETCH cul INTO emp_id, emp_name, emp_salary;
+		EXIT WHEN cul%NOTFOUND;
+	
+		dbms_output.put_line(emp_id || ' ' || emp_name || ' ' || emp_salary);
+	END LOOP;
+	CLOSE cul;
+END;
+
+-- Cursor 반복문 사용 방법
+For [Record Name] IN [Cursor Name] LOOP
+
+	-- 명시적 커서의 OPEN, FETCH가 자동으로 수행
+	SQL Sentences;
+    
+END LOOP; 
+-- 루프문을 빠져 나갈 때 커서가 자동으로 종료
+
+-- Cursor 반복문 사용 예제
+DECLARE
+	CURSOR emp_cur IS
+	SELECT EMPLOYEE_ID, LAST_NAME FROM EMPLOYEES e2
+	WHERE SALARY < 5000;
+	
+BEGIN
+	FOR emp_rec IN emp_cur LOOP
+		dbms_output.put_line(emp_rec.employee_id || ' ' || emp_rec.last_name);
+	END LOOP;
+END;
+
+```
+
+</div>
+</details>
