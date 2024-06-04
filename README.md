@@ -204,6 +204,8 @@ ST AS	-- SALES TARGET
 <summary style="font-size:16px ">Oracle PL/SQL CURSOR</summary>
 <div markdown="1">
 
+### Oralce CURSOR
+
 * CURSOR : **ORACLE 서버에서 할당한 전용 메모리 영역에 대한 포인터. (질의의 결과로 얻어진 여러 행이 저장된 메모리상의 위치)**
 * 커서는 주로 SELECT 문의 결과 집합을 처리하는데 사용된다.
 * 즉, 대부분 SQL 결과 ROW는 여러개 -> 커서를 사용함으로써 ROW에 순차적으로 접근한다.
@@ -274,6 +276,44 @@ BEGIN
 	END LOOP;
 END;
 
+```
+
+</div>
+</details>
+
+<details>
+<summary style="font-size:16px ">Oracle -> PostgreSQL 전환 주의사항</summary>
+<div markdown="1">
+
+### 날짜 형변환
+
+```SQL
+-- ORACLE 정상 조회
+SELECT TO_DATE(ORDER_DT, 'YYYY-MM-DD') FROM PT_ORDER;
+
+-- POSTGRESQL ERROR - (date/time field value out of range: "9999-99-99")
+SELECT TO_DATE(ORDER_DT, 'YYYY-MM-DD') FROM PT_ORDER;
+```
+
+* POSTGRESQL은 데이터가 DATE형식에 맞지 않으면 위에 에러 발생.
+* 에러 해결 방법은 아래와 같다.
+	* 잘못된 날짜를 무시하고 유효한 날짜만 반환
+	* 잘못된 날짜를 수정하여 반환
+
+```SQL
+-- AS-IS ORACLE
+SELECT TO_DATE(ORDER_DT, 'YYYY-MM-DD') FROM PT_ORDER;
+
+-- TO-BE POSTGRESQL (잘못된 날짜를 수정하여 반환)
+SELECT
+	CASE
+		WHEN SUBSTRING(ORDER_DT,6,5) = '99-99' THEN SUBSTRING(ORDER_DT,1,5) || '12-31'
+		ELSE ORDER_DT
+	END
+FROM
+	PT_ORDER
+WHERE 
+	ORDER_DT = '9999-99-99';
 ```
 
 </div>
