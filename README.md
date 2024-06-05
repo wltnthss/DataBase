@@ -318,3 +318,53 @@ WHERE
 
 </div>
 </details>
+
+<details>
+<summary style="font-size:16px ">MERGE INTO</summary>
+<div markdown="1">
+
+### MERGE INTO
+
+* 테이블에 데이터가 이미 존재하면 업데이트, 존재하지 않으면 입력하는 경우 작업을 한번에 처리하는 MERGE INTO 문 활용. (ORACLE, POSTGRESQL 둘 다 활용 가능)
+
+![alt text](image.png)
+
+```SQL
+-- MERGE INTO 기본 사용 방법
+MERGE INTO [TABLE / VIEW] -- update 또는 insert할 테이블 혹은 뷰
+    USING [TABLE / VIEW / DUAL] -- 비교할 대상 테이블 혹은 뷰 (위 테이블과 동일할 경우 DUAL을 사용)
+    ON [조건] -- UPDATE 와 INSERT 처리할 조건문 (조건이 일치하면 UPDATE / 불일치 시 INSERT)
+    WHEN MATCHED THEN  -- 일치하는 경우
+          UPDATE SET
+          [COLUMN1] = [VALUE1],
+          [COLUMN2] = [VALUE2],
+          ...
+          (DELETE [TABLE] WHERE [COLUMN 1] = [VALUE 1] AND ...) -- UPDATE 뿐만 아니라 DELETE 구문도 사용 가능
+    WHEN NOT MATCHED THEN  -- 일치하지 않는 경우
+         INSERT (COLUMN1, COLUMN2, ...)
+         VALUES (VALUE1, VALUE2, ...)
+
+-- 실사용예제
+MERGE INTO TB_SCORE S 
+	USING DUAL 
+	ON 
+	(
+	S.COURSE_ID = 'C1' 
+	AND S.STUDENT_ID = 'S1'
+	)    
+	WHEN MATCHED THEN       
+		UPDATE
+			SET
+			S.SCORE = 20     
+	WHEN NOT MATCHED THEN       
+		INSERT
+			(S.COURSE_ID,
+			S.STUDENT_ID,
+			S.SCORE)       
+		VALUES ('C1',
+	'S1',
+	20);
+```
+
+</div>
+</details>
