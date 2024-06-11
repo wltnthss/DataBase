@@ -368,3 +368,24 @@ MERGE INTO TB_SCORE S 
 
 </div>
 </details>
+
+<details>
+<summary style="font-size:16px ">SEQUENCE CACHE</summary>
+<div markdown="1">
+
+### SEQUENCE CACHE
+
+* 신규 테이블의 데이터 저장 중 SEQUENCE 값이 1씩 정상적으로 증가하지 않는 경우는 CACHE가 지정되어있을 확률이 높습니다.
+* SEQUENCE CACHE 란?
+	* 속도를 위해 사용하며, 시퀀스를 요청할 때마다 데이터 사전에 접근하는 것이 아닌 캐시로 지정된 크기만큼 캐시 메모리(Library Cache)에 올려두고 사용합니다.
+* 무조건적으로 사용하는 것이 좋다?
+	* DB의 비정상적인 종료로 인하여 종료될 때 Library Cache가 소멸되므로 비정상적으로 SEQUENCE가 증가할 수 있는 문제점이 발생할 수도 있습니다.
+
+**결론**
+
+* 생성되는 시퀀스 값이 비즈니스 로직에서 중요한 역할을 하고, 반드시 1씩 채번이 되어야하는 경우에는 NOCACHE로 시퀀스를 생성해야합니다.
+* 시퀀스가 로직 상 중요하지 않고 값의 PK용도로만 사용한다면 CACHE를 지정하여 속도에 도움을 줄 수 있습니다.
+* CACHE 문제가 발생하는 환경은 대부분 RAC 환경이라고 한다. (RAC환경은 잘모르니까 나중에 알아보자...)
+
+</div>
+</details>
